@@ -60,7 +60,7 @@ int image_info_lire(FILE *file, struct ImageInfo *p_info) {
 
 int color_data_read(FILE *file, int data[MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES]) {
     for (int i = 0; i < MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES; i++) {
-        if (fscanf(file, "%d", &data[i]) != 1) return ERREUR_FORMAT;
+        if (fscanf(file, "%d", &data[i]) != 1) return OK;
         if (data[i] < 0 || data[i] > MAX_VALEUR) return ERREUR_FORMAT;
     }
 
@@ -69,7 +69,6 @@ int color_data_read(FILE *file, int data[MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_B
 
 int meta_data_ecrire(FILE *file, struct MetaData *p_metadonnees) {
     fprintf(file, "#%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
-    printf("#%s;%s;%s\n", p_metadonnees->auteur, p_metadonnees->dateCreation, p_metadonnees->lieuCreation);
 
     return OK;
 }
@@ -180,7 +179,24 @@ int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 }
 
 int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes) {
-    // TODO Implement pgm_couleur_preponderante
+    // A zero-sized image is counted as an error as this operation is impossible if there is no color
+    if (lignes <= 0 || lignes > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes <= 0 || colonnes > MAX_LARGEUR) return ERREUR_TAILLE;
+
+    int histogram[MAX_VALEUR+1];
+    int error_code = pgm_creer_histogramme(matrice, lignes, colonnes, histogram);
+    if (error_code != OK) return error_code;
+
+    int preponderant_color = 0;
+    int occurrences = histogram[0];
+
+    for (int color = 1; color <= MAX_VALEUR; color++)
+        if (histogram[color] > occurrences) {
+            occurrences = histogram[color];
+            preponderant_color = color;
+        }
+
+    return OK;
 }
 
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur) {
