@@ -187,7 +187,25 @@ int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int
 }
 
 int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
-    // TODO Implement pgm_pivoter90
+    if (sens != 0 && sens != 1) return ERREUR;
+
+    int matriceCopy[MAX_HAUTEUR][MAX_LARGEUR];
+    memcpy(matriceCopy, matrice, MAX_HAUTEUR * MAX_LARGEUR * sizeof(int));
+
+    for (int i = 0; i < *p_lignes; i++) {
+        for (int j = 0; j < *p_colonnes; j++) {
+            int iDest = sens == 1 ? j : ((*p_colonnes - 1) - j);
+            int jDest = sens == 0 ? i : ((*p_lignes - 1) - i);
+            matrice[iDest][jDest] = matriceCopy[i][j];
+        }
+    }
+
+    // Invert the sides
+    int temp = *p_lignes;
+    *p_lignes = *p_colonnes;
+    *p_colonnes = temp;
+
+    return OK;
 }
 
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
@@ -280,5 +298,21 @@ int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int ligne
 }
 
 int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
-    // TODO Implement ppm_pivoter90
+    if (sens != 0 && sens != 1) return ERREUR;
+
+    struct RGB matriceCopy[MAX_HAUTEUR][MAX_LARGEUR];
+    memcpy(matriceCopy, matrice, MAX_HAUTEUR * MAX_LARGEUR * sizeof(struct RGB));
+
+    for (int i = 0; i < *p_lignes; i++) {
+        for (int j = 0; j < *p_colonnes; j++) {
+            int iDest = sens == 1 ? j : ((*p_colonnes - 1) - j);
+            int jDest = sens == 0 ? i : ((*p_lignes - 1) - i);
+            matrice[iDest][jDest] = matriceCopy[i][j];
+        }
+    }
+
+    // Invert the sides
+    int temp = *p_lignes;
+    *p_lignes = *p_colonnes;
+    *p_colonnes = temp;
 }
