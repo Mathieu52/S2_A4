@@ -98,12 +98,14 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
     int codeData = color_data_read(file, data);
     if (codeData != OK) return codeData;
 
+    //memcpy(matrice, data, MAX_HAUTEUR * MAX_LARGEUR * sizeof(int));
+
+
     for (int i = 0; i < info.height; i++) {
         for (int j = 0; j < info.width; j++) {
             matrice[i][j] = data[i * info.width + j];
         }
     }
-
     *p_lignes = info.height;
     *p_colonnes = info.width;
     *p_maxval = info.maxval;
@@ -238,14 +240,17 @@ int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int c
     *p_colonnes2 = colonnes1;
 }
 
-int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RG matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
+int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
     if (lignes1 != lignes2 || colonnes2 != lignes2) {
         return 0;
     }
 
     for (int i = 0; i < lignes1; i++)
-        for (int j = 0; j < colonnes1; j++)
-            if (matrice1[i][j] != matrice2[i][j]) return 0;
+        for (int j = 0; j < colonnes1; j++) {
+            if (matrice1[i][j].valeurR != matrice2[i][j].valeurR) return 0;
+            if (matrice1[i][j].valeurG != matrice2[i][j].valeurG) return 0;
+            if (matrice1[i][j].valeurB != matrice2[i][j].valeurB) return 0;
+        }
 
     return 1;
 }
