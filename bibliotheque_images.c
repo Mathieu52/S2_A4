@@ -87,6 +87,7 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
              int *p_maxval, struct MetaData *p_metadonnees) {
 
     FILE *file = fopen(nom_fichier, "r");
+    if (file == NULL) return ERREUR_FICHIER;
 
     struct ImageInfo info;
     int codeInfo = image_info_lire(file, &info);
@@ -119,6 +120,7 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
                int maxval, struct MetaData metadonnees) {
 
     FILE *file = fopen(nom_fichier, "w");
+    if (file == NULL) return ERREUR_FICHIER;
 
     struct ImageInfo info = {metadonnees, P2, colonnes, lignes, maxval};
 
@@ -146,6 +148,8 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
     if (lignes1 != *p_lignes2) return ERREUR;
     if (colonnes1 != *p_colonnes2) return ERREUR;
+    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
 
     memcpy(matrice2, matrice1, sizeof(int) * MAX_HAUTEUR * MAX_LARGEUR);
     *p_lignes2 = lignes1;
@@ -188,6 +192,8 @@ int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int
 
 int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
     if (sens != 0 && sens != 1) return ERREUR;
+    if (*p_lignes < 0 || *p_lignes > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (*p_colonnes < 0 || *p_colonnes > MAX_LARGEUR) return ERREUR_TAILLE;
 
     int matriceCopy[MAX_HAUTEUR][MAX_LARGEUR];
     memcpy(matriceCopy, matrice, MAX_HAUTEUR * MAX_LARGEUR * sizeof(int));
@@ -213,6 +219,7 @@ int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
              int *p_maxval, struct MetaData *p_metadonnees) {
 
     FILE *file = fopen(nom_fichier, "r");
+    if (file == NULL) return ERREUR_FICHIER;
 
     struct ImageInfo info;
     int codeInfo = image_info_lire(file, &info);
@@ -247,6 +254,7 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
                int maxval, struct MetaData metadonnees) {
 
     FILE *file = fopen(nom_fichier, "w");
+    if (file == NULL) return ERREUR_FICHIER;
 
     struct ImageInfo info = {metadonnees, P3, colonnes, lignes, maxval};
 
@@ -274,6 +282,8 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
     if (lignes1 != *p_lignes2) return ERREUR;
     if (colonnes1 != *p_colonnes2) return ERREUR;
+    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
 
     memcpy(matrice2, matrice1, sizeof(struct RGB) * MAX_HAUTEUR * MAX_LARGEUR);
     *p_lignes2 = lignes1;
@@ -299,6 +309,8 @@ int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int ligne
 
 int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
     if (sens != 0 && sens != 1) return ERREUR;
+    if (*p_lignes < 0 || *p_lignes > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (*p_colonnes < 0 || *p_colonnes > MAX_LARGEUR) return ERREUR_TAILLE;
 
     struct RGB matriceCopy[MAX_HAUTEUR][MAX_LARGEUR];
     memcpy(matriceCopy, matrice, MAX_HAUTEUR * MAX_LARGEUR * sizeof(struct RGB));
