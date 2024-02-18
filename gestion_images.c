@@ -20,8 +20,8 @@ int main()
     int lignes2, colonnes2;
     int maxval;
     int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit.ppm";
-    char nomOut[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit2.ppm";
+    char nom[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit.pgm";
+    char nomOut[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit2.pgm";
     struct MetaData metadonnees;
 
 	int retour;
@@ -29,7 +29,7 @@ int main()
     printf("-> Debut!\n");
 
 	// exemple d'appel de fonction
-    retour = ppm_lire(nom, image1,
+    retour = pgm_lire(nom, image1,
                       &lignes1, &colonnes1, 
                       &maxval, &metadonnees);
 
@@ -42,7 +42,7 @@ int main()
 	printf("\n");
 
 	// autre exemple d'appel de fonction
-    ppm_ecrire(nomOut, image1,
+    pgm_ecrire(nomOut, image1,
                lignes1, colonnes1, 
                maxval, metadonnees);
 

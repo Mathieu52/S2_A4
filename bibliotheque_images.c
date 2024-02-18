@@ -98,14 +98,12 @@ int pgm_lire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
     int codeData = color_data_read(file, data);
     if (codeData != OK) return codeData;
 
-    //memcpy(matrice, data, MAX_HAUTEUR * MAX_LARGEUR * sizeof(int));
-
-
     for (int i = 0; i < info.height; i++) {
         for (int j = 0; j < info.width; j++) {
             matrice[i][j] = data[i * info.width + j];
         }
     }
+
     *p_lignes = info.height;
     *p_colonnes = info.width;
     *p_maxval = info.maxval;
@@ -128,8 +126,6 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
 
     int count = 0;
 
-    char number[5];
-
     for (int i = 0; i < info.height; i++) {
         for (int j = 0; j < info.width; j++) {
 
@@ -139,8 +135,6 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
                 fprintf(file, "\n");
                 count = 0;
             }
-
-            fprintf(file, "%s", number);
         }
     }
 
@@ -150,9 +144,34 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
 }
 
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
+    if (lignes1 != *p_lignes2) return ERREUR;
+    if (colonnes1 != *p_colonnes2) return ERREUR;
+
     memcpy(matrice2, matrice1, sizeof(int) * MAX_HAUTEUR * MAX_LARGEUR);
     *p_lignes2 = lignes1;
     *p_colonnes2 = colonnes1;
+
+    return OK;
+}
+
+int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int histogramme[MAX_VALEUR+1]) {
+    // TODO Implement pgm_creer_histogramme
+}
+
+int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes) {
+    // TODO Implement pgm_couleur_preponderante
+}
+
+int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur) {
+    // TODO Implement pgm_eclaircir_noircir
+}
+
+int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval) {
+    // TODO Implement pgm_creer_negatif
+}
+
+int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes) {
+    // TODO Implement pgm_extraire
 }
 
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
@@ -165,6 +184,10 @@ int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int
             if (matrice1[i][j] != matrice2[i][j]) return 0;
 
     return 1;
+}
+
+int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
+    // TODO Implement pgm_pivoter90
 }
 
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
@@ -213,8 +236,6 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 
     int count = 0;
 
-    char number[5];
-
     for (int i = 0; i < info.height; i++) {
         for (int j = 0; j < info.width; j++) {
 
@@ -224,8 +245,6 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
                 fprintf(file, "\n");
                 count = 0;
             }
-
-            fprintf(file, "%s", number);
         }
     }
 
@@ -235,9 +254,14 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 }
 
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
+    if (lignes1 != *p_lignes2) return ERREUR;
+    if (colonnes1 != *p_colonnes2) return ERREUR;
+
     memcpy(matrice2, matrice1, sizeof(struct RGB) * MAX_HAUTEUR * MAX_LARGEUR);
     *p_lignes2 = lignes1;
     *p_colonnes2 = colonnes1;
+
+    return OK;
 }
 
 int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
@@ -253,4 +277,8 @@ int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int ligne
         }
 
     return 1;
+}
+
+int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
+    // TODO Implement ppm_pivoter90
 }
