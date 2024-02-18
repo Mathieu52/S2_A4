@@ -196,7 +196,7 @@ int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes,
             preponderant_color = color;
         }
 
-    return OK;
+    return preponderant_color;
 }
 
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur) {
