@@ -62,6 +62,8 @@ struct RGB
     int valeurB;
 };
 
+int constrain_color(int color, int maxval);
+
 int meta_data_lire(char* comment, struct MetaData *p_metadonnees);
 int image_info_lire(FILE *file, struct ImageInfo *p_info);
 int color_data_read(FILE *file, int data[MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES]);

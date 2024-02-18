@@ -9,6 +9,13 @@ Description: Fichier de distribution pour GEN145.
 #include <string.h>
 #include "bibliotheque_images.h"
 
+int constrain_color(int color, int maxval) {
+    if (color < 0) return 0;
+    if (color > maxval) return maxval;
+
+    return color;
+}
+
 int meta_data_lire(char* comment, struct MetaData *p_metadonnees) {
     char data[3][STR_MAX_LENGTH];
 
@@ -200,16 +207,17 @@ int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes,
 }
 
 int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval, int valeur) {
-    for(int i = 0; i < lignes; i++)
-    {
-        for(int j = 0; j < colonnes; j++)
-        {
-            matrice[i][j] += valeur;
-            
-            if(matrice[i][j] > maxval) {matrice[i][j] = maxval;}
-            if(matrice[i][j] < 0) {matrice[i][j] = 0;}
+    if (maxval > MAX_VALEUR) return ERREUR_FORMAT;
+    if (lignes < 0 || lignes > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes < 0 || colonnes > MAX_LARGEUR) return ERREUR_TAILLE;
+
+    for (int i = 0; i < lignes; i++) {
+        for (int j = 0; j < colonnes; j++) {
+            matrice[i][j] = constrain_color(matrice[i][j] + valeur, maxval);
         }
     }
+
+    return OK;
 }
 
 int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval) {
