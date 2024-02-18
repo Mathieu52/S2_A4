@@ -153,6 +153,35 @@ int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes
     *p_colonnes2 = colonnes1;
 }
 
+int pgm_creer_histogramme(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                          int lignes, int colonnes, int histogramme[MAX_VALEUR+1]) {
+                          
+    //À faire
+}
+
+int pgm_couleur_preponderante(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                              int lignes, int colonnes) {
+    //À faire
+}
+
+int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                          int lignes, int colonnes, int maxval, int valeur) {
+    //À faire
+}
+
+int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                      int lignes, int colonnes, int maxval) {
+    //À faire
+}
+
+int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                 int lignes1, int colonnes1, int lignes2, int colonnes2,
+                 int *p_lignes, int *p_colonnes) {
+
+    //À faire
+
+}
+
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
     if (lignes1 != lignes2 || colonnes2 != lignes2) {
         return 0;
@@ -163,6 +192,13 @@ int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int
             if (matrice1[i][j] != matrice2[i][j]) return 0;
 
     return 1;
+}
+
+int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                  int *p_lignes, int *p_colonnes, int sens) {
+
+    //À faire
+
 }
 
 int ppm_lire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
@@ -239,6 +275,7 @@ int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int c
 }
 
 int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RG matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
+
     if (lignes1 != lignes2 || colonnes2 != lignes2) {
         return 0;
     }
@@ -248,4 +285,9 @@ int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int ligne
             if (matrice1[i][j] != matrice2[i][j]) return 0;
 
     return 1;
+}
+
+int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
+                  int *p_lignes, int *p_colonnes, int sens) {
+    //À faire
 }
