@@ -59,11 +59,12 @@ int image_info_lire(FILE *file, struct ImageInfo *p_info) {
 }
 
 int color_data_read(FILE *file, int data[MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES]) {
-    int i = 0;
+    for (int i = 0; i < MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES; i++) {
+        if (fscanf(file, "%d", &data[i]) != 1) return ERREUR_FORMAT;
+        if (data[i] < 0 || data[i] > MAX_VALEUR) return ERREUR_FORMAT;
+    }
 
-    while (i < MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES && fscanf(file, "%d", &data[i++]) == 1);
-
-    return i < MAX_HAUTEUR * MAX_LARGEUR * MAX_PIXEL_BYTES ? OK : ERREUR_TAILLE;
+    return OK;
 }
 
 int meta_data_ecrire(FILE *file, struct MetaData *p_metadonnees) {
