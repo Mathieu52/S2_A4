@@ -221,11 +221,36 @@ int pgm_eclaircir_noircir(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int
 }
 
 int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int colonnes, int maxval) {
-    // TODO Implement pgm_creer_negatif
+    if (maxval > MAX_VALEUR) return ERREUR_FORMAT;
+    if (lignes < 0 || lignes > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes < 0 || colonnes > MAX_LARGEUR) return ERREUR_TAILLE;
+
+    for (int i = 0; i < lignes; i++) {
+        for (int j = 0; j < colonnes; j++) {
+            matrice[i][j] = constrain_color(maxval - matrice[i][j], maxval);
+        }
+    }
+
+    return OK;
 }
 
 int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes) {
-    // TODO Implement pgm_extraire
+    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
+    if (lignes2 < 0 || lignes2 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes2 < 0 || colonnes2 > MAX_LARGEUR) return ERREUR_TAILLE;
+    if (lignes1 > lignes2 || colonnes1 > colonnes2) return ERREUR_TAILLE;
+
+    for (int i = lignes1; i < lignes2; i++) {
+        for (int j = colonnes1; j < colonnes2; j++) {
+            matrice[i - lignes1][j - colonnes2] = matrice[i][j]; 
+        }
+    }
+    
+    *p_lignes = lignes2 - lignes1;
+    *p_colonnes = colonnes2 - colonnes1;
+
+    return OK;
 }
 
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
