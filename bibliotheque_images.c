@@ -377,4 +377,6 @@ int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, i
     int temp = *p_lignes;
     *p_lignes = *p_colonnes;
     *p_colonnes = temp;
+
+    return OK;
 }
