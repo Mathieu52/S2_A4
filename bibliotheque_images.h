@@ -13,7 +13,6 @@ Description: Solution de la problematique pour GEN145.
 #define BIBLIOTHEQUE_IMAGES_H
 
 #include <stdio.h>
-#include "string_x.h"
 
 // Valeurs maximales pour les images
 #define MAX_LARGEUR 256
@@ -61,6 +60,13 @@ struct RGB
     int valeurG;
     int valeurB;
 };
+
+#define STR_MAX_LENGTH 4096
+
+int length(const char* str);
+int equals(const char* str1, const char* str2);
+
+int split(char* source, char* delim, int size, char dest[size][STR_MAX_LENGTH]);
 
 int constrain_color(int color, int maxval);
 

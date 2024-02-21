@@ -9,6 +9,99 @@ Description: Fichier de distribution pour GEN145.
 #include <string.h>
 #include "bibliotheque_images.h"
 
+//
+// Created by Mathieu Durand on 2024-02-16.
+//
+
+/**
+ * @brief Calculates the length of a null-terminated string.
+ *
+ * This function iterates over the characters of the input string until it
+ * encounters the null terminator ('\0') or reaches the maximum allowed length
+ * of the string, whichever comes first. It then returns the number of characters
+ * encountered before the null terminator.
+ *
+ * @param str Pointer to the null-terminated string whose length is to be calculated.
+ *            If NULL, the function returns 0.
+ * @return The length of the string, excluding the null terminator.
+ */
+int length(const char* str) {
+    if (str == NULL) return 0;  // Handle NULL pointer gracefully
+
+    int index = 0;
+    while (index < STR_MAX_LENGTH && str[index] != '\0') {
+        index++;
+    }
+
+    return index;
+}
+
+/**
+ * @brief Checks if two null-terminated strings are equal.
+ *
+ * This function iterates over the characters of both input strings simultaneously
+ * until it encounters a mismatch or reaches the maximum allowed length of the strings.
+ * If a mismatch is found, it returns 0. If both strings are equal up to the null
+ * terminator of either string, it returns 1. If one of the strings is NULL and the
+ * other is not, it returns 0. If both strings are NULL, it returns 1.
+ *
+ * @param str1 Pointer to the first null-terminated string to compare.
+ * @param str2 Pointer to the second null-terminated string to compare.
+ * @return 1 if the strings are equal up to the null terminator of either string,
+ *         0 otherwise. If one of the strings is NULL and the other is not, it returns 0.
+ *         If both strings are NULL, it returns 1.
+ */
+int equals(const char* str1, const char* str2) {
+    // Handle NULL pointer gracefully
+    if (str1 == NULL && str2 == NULL) return 1;
+    if (str1 == NULL || str2 == NULL) return 0;
+
+    for (int index = 0; index < STR_MAX_LENGTH; index++) {
+        if (str1[index] != str2[index]) {
+            return 0; // Mismatch found
+        }
+
+        if (str1[index] == '\0' || str2[index] == '\0') {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/**
+ * @brief Splits a string into tokens based on a delimiter.
+ *
+ * This function takes a source string and a delimiter string and splits the source
+ * string into tokens based on the delimiter. The tokens are stored in an array of
+ * strings, provided as the 'dest' parameter. The maximum number of tokens to be
+ * stored in the 'dest' array is specified by the 'size' parameter.
+ *
+ * @param source Pointer to the source string to be split.
+ * @param delim Pointer to the delimiter string used to split the source string.
+ * @param size Maximum number of tokens to be stored in the 'dest' array.
+ * @param dest Array of strings where the tokens will be stored.
+ *
+ * @return The number of tokens found and stored in the 'dest' array.
+ */
+int split(char* source, char* delim, int size, char dest[size][STR_MAX_LENGTH]) {
+    char temp[strlen(source) + 1];
+    strcpy(temp, source);
+
+    char* ptr = strtok(temp, delim);
+    int index = 0;
+
+    while (index < size - 1) {
+        strcpy(dest[index++], ptr);
+        ptr = strtok(NULL, delim);
+        if (ptr == NULL) return index;
+    }
+
+    strcpy(dest[index++], ptr);
+
+    return index;
+}
+
 int constrain_color(int color, int maxval) {
     if (color < 0) return 0;
     if (color > maxval) return maxval;
@@ -53,7 +146,7 @@ int image_info_lire(FILE *file, struct ImageInfo *p_info) {
         printf("Author: %s\nDate: %s\nLocation: %s\n", p_info->metadata.auteur, p_info->metadata.dateCreation, p_info->metadata.lieuCreation);
     }
 
-    if (fscanf(file, "%*c%d", &p_info->type) != 1) return ERREUR_FORMAT;
+    if (fscanf(file, "P%d", &p_info->type) != 1) return ERREUR_FORMAT;
     if (p_info->type != P2 && p_info->type != P3) return ERREUR_FORMAT;
 
     if (fscanf(file, "%d%*[ \t]%d", &p_info->width, &p_info->height) != 2) return ERREUR_TAILLE;
@@ -153,12 +246,11 @@ int pgm_ecrire(char nom_fichier[], int matrice[MAX_HAUTEUR][MAX_LARGEUR],
 }
 
 int pgm_copier(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
-    if (lignes1 != *p_lignes2) return ERREUR;
-    if (colonnes1 != *p_colonnes2) return ERREUR;
     if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
     if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
 
     memcpy(matrice2, matrice1, sizeof(int) * MAX_HAUTEUR * MAX_LARGEUR);
+    
     *p_lignes2 = lignes1;
     *p_colonnes2 = colonnes1;
 
@@ -235,34 +327,51 @@ int pgm_creer_negatif(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes, int col
 }
 
 int pgm_extraire(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int lignes2, int colonnes2, int *p_lignes, int *p_colonnes) {
-    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
-    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
-    if (lignes2 < 0 || lignes2 > MAX_HAUTEUR) return ERREUR_TAILLE;
-    if (colonnes2 < 0 || colonnes2 > MAX_LARGEUR) return ERREUR_TAILLE;
-    if (lignes1 > lignes2 || colonnes1 > colonnes2) return ERREUR_TAILLE;
+	int width = colonnes2 - colonnes1 + 1;
+	int height = lignes2 - lignes1 + 1;
+	
+	if (*p_lignes < 0 || *p_lignes > MAX_HAUTEUR) return ERREUR;
+    if (*p_colonnes < 0 || *p_colonnes > MAX_LARGEUR) return ERREUR;
+    
+    if (height < 0 || height > MAX_HAUTEUR) return ERREUR;
+    if (width < 0 || width > MAX_LARGEUR) return ERREUR;
+    
+    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR;
+    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR;
+    
+    if (lignes2 < 0 || lignes2 > MAX_HAUTEUR) return ERREUR;
+    if (colonnes2 < 0 || colonnes2 > MAX_LARGEUR) return ERREUR;
+    
+    if (height >= *p_lignes) return ERREUR;
+    if (width >= *p_colonnes) return ERREUR;
+   
+    
+    int matriceCopy[MAX_HAUTEUR][MAX_LARGEUR];
+    memcpy(matriceCopy, matrice, MAX_HAUTEUR * MAX_LARGEUR * sizeof(int));
 
-    for (int i = lignes1; i < lignes2; i++) {
-        for (int j = colonnes1; j < colonnes2; j++) {
-            matrice[i - lignes1][j - colonnes2] = matrice[i][j]; 
+    for (int i = lignes1; i <= lignes2; i++) {
+        for (int j = colonnes1; j <= colonnes2; j++) {
+            matrice[i - lignes1][j - colonnes1] = matriceCopy[i][j]; 
         }
     }
     
-    *p_lignes = lignes2 - lignes1;
-    *p_colonnes = colonnes2 - colonnes1;
+    *p_lignes = height;
+    *p_colonnes = width;
 
     return OK;
 }
 
 int pgm_sont_identiques(int matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, int matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
-    if (lignes1 != lignes2 || colonnes2 != lignes2) {
-        return 0;
-    }
+    if (lignes2 < 0 || lignes2 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes2 < 0 || colonnes2 > MAX_LARGEUR) return ERREUR_TAILLE;
+    
+    if (lignes1 != lignes2 || colonnes1 != colonnes2) return 1;
 
     for (int i = 0; i < lignes1; i++)
         for (int j = 0; j < colonnes1; j++)
-            if (matrice1[i][j] != matrice2[i][j]) return 0;
+            if (matrice1[i][j] != matrice2[i][j]) return 1;
 
-    return 1;
+    return 0;
 }
 
 int pgm_pivoter90(int matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {
@@ -355,8 +464,6 @@ int ppm_ecrire(char nom_fichier[], struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR],
 }
 
 int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes2, int *p_colonnes2) {
-    if (lignes1 != *p_lignes2) return ERREUR;
-    if (colonnes1 != *p_colonnes2) return ERREUR;
     if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
     if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
 
@@ -368,18 +475,21 @@ int ppm_copier(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int c
 }
 
 int ppm_sont_identiques(struct RGB matrice1[MAX_HAUTEUR][MAX_LARGEUR], int lignes1, int colonnes1, struct RGB matrice2[MAX_HAUTEUR][MAX_LARGEUR], int lignes2, int colonnes2) {
-    if (lignes1 != lignes2 || colonnes2 != lignes2) {
-        return 0;
-    }
+    if (lignes1 < 0 || lignes1 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes1 < 0 || colonnes1 > MAX_LARGEUR) return ERREUR_TAILLE;
+    if (lignes2 < 0 || lignes2 > MAX_HAUTEUR) return ERREUR_TAILLE;
+    if (colonnes2 < 0 || colonnes2 > MAX_LARGEUR) return ERREUR_TAILLE;
+    
+    if (lignes1 != lignes2 || colonnes1 != colonnes2) return 1;
 
     for (int i = 0; i < lignes1; i++)
         for (int j = 0; j < colonnes1; j++) {
-            if (matrice1[i][j].valeurR != matrice2[i][j].valeurR) return 0;
-            if (matrice1[i][j].valeurG != matrice2[i][j].valeurG) return 0;
-            if (matrice1[i][j].valeurB != matrice2[i][j].valeurB) return 0;
+            if (matrice1[i][j].valeurR != matrice2[i][j].valeurR) return 1;
+            if (matrice1[i][j].valeurG != matrice2[i][j].valeurG) return 1;
+            if (matrice1[i][j].valeurB != matrice2[i][j].valeurB) return 1;
         }
 
-    return 1;
+    return 0;
 }
 
 int ppm_pivoter90(struct RGB matrice[MAX_HAUTEUR][MAX_LARGEUR], int *p_lignes, int *p_colonnes, int sens) {

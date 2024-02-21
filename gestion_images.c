@@ -8,6 +8,7 @@ Description: Fichier de distribution pour GEN145.
 
 #include <stdio.h>
 #include "bibliotheque_images.h"
+#include "AutoValidation.h"
 
 int image1[MAX_HAUTEUR][MAX_LARGEUR];
 int image2[MAX_HAUTEUR][MAX_LARGEUR];
@@ -45,12 +46,13 @@ char* error_code_to_string(int error_code) {
 
 int main()
 {
+	AutoValidation();
     int lignes1, colonnes1;
     int lignes2, colonnes2;
     int maxval;
     int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit.pgm";
-    char nomOut[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit2.pgm";
+    char nom[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit.pgm";
+    char nomOut[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit2.pgm";
     struct MetaData metadonnees;
 
 	int retour;
@@ -61,8 +63,6 @@ int main()
     retour = pgm_lire(nom, image1,
                       &lignes1, &colonnes1, 
                       &maxval, &metadonnees);
-
-    printHistogram(image1, lignes1, colonnes1, 50);
 
 	// exemple detraitement d'un code de retour (erreur ou reussite)
 	printf("-> Retour: ");
