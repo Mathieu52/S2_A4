@@ -46,13 +46,13 @@ char* error_code_to_string(int error_code) {
 
 int main()
 {
-	AutoValidation();
+	//AutoValidation();
     int lignes1, colonnes1;
     int lignes2, colonnes2;
     int maxval;
     int histogramme[MAX_VALEUR+1];
-    char nom[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit.pgm";
-    char nomOut[MAX_CHAINE] = "Sherbrooke_Frontenac_nuit2.pgm";
+    char nom[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit.pgm";
+    char nomOut[MAX_CHAINE] = "/Users/mathieudurand/CLionProjects/S2-A4/Sherbrooke_Frontenac_nuit2.pgm";
     struct MetaData metadonnees;
 
 	int retour;

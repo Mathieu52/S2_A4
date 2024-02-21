@@ -85,16 +85,18 @@ int equals(const char* str1, const char* str2) {
  * @return The number of tokens found and stored in the 'dest' array.
  */
 int split(char* source, char* delim, int size, char dest[size][STR_MAX_LENGTH]) {
-    char temp[strlen(source) + 1];
+    int length = strlen(source);
+    char temp[length + 1];
     strcpy(temp, source);
 
-    char* ptr = strtok(temp, delim);
+    char *ptr = temp; // Initialize ptr with temp
     int index = 0;
 
     while (index < size - 1) {
-        strcpy(dest[index++], ptr);
-        ptr = strtok(NULL, delim);
-        if (ptr == NULL) return index;
+        char *token = strsep(&ptr, delim);
+        if (token == NULL)
+            break;
+        strcpy(dest[index++], token);
     }
 
     strcpy(dest[index++], ptr);
@@ -113,11 +115,12 @@ int meta_data_lire(char* comment, struct MetaData *p_metadonnees) {
     char data[3][STR_MAX_LENGTH];
 
     if (split(comment, ";", 3, data) != 3) {
-        return ERREUR;
+        printf("%d\n", split(comment, ";", 3, data));
+        return ERREUR_FORMAT;
     }
 
     if (length(data[0]) >= MAX_CHAINE || length(data[1]) >= MAX_CHAINE || length(data[2]) >= MAX_CHAINE) {
-        return ERREUR;
+        return ERREUR_FORMAT;
     }
 
     strcpy(p_metadonnees->auteur, data[0]);
